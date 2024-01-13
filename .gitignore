@@ -13,3 +13,4 @@
 
 # Files that are unique to each device
 **/data.db
+**/*.pyc
