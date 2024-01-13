@@ -1,0 +1,26 @@
+[tool.poetry]
+name = "application"
+version = "0.1.0"
+description = ""
+authors = ["Tsien Jin <46650957+TsienJin@users.noreply.github.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11, <3.12"
+tensorflow-metal = "^1.1.0"
+scipy = "^1.11.4"
+numpy = "^1.26.3"
+tensorflow-io-gcs-filesystem = "0.34.0"
+deepface = "^0.0.81"
+psycopg = "^3.1.17"
+python-dotenv = "^1.0.0"
+psycopg-binary = "^3.1.17"
+pydantic = "^2.5.3"
+
+[tool.poetry.scripts]
+dev = "application.app:main"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
