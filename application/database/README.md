@@ -22,10 +22,10 @@ erDiagram
         array encoding
     }  
     
-    PersonInImage {
+    FaceInImage {
         int id pk
         int image_id
-        int person_id
+        int face_id
     }
     
     Source { 
@@ -34,8 +34,8 @@ erDiagram
     }  
     
     
-    Image ||--o{ PersonInImage : "Contains"
-    PersonInImage ||--|| Person : "References"
+    Image ||--o{ FaceInImage : "Contains"
+    FaceInImage ||--o{ Face : "Belongs to"
     Person ||--o{ Face : "Has encodings"
 ```
 
