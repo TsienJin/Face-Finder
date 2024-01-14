@@ -2,11 +2,14 @@ import sys
 import os
 import re
 import glob
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from typing import Pattern, Dict
 
 from application.objects.image import Image
 from application.scan.scan_tree import ScanTree
+from application.util.logger import LogEmitter
+from application.util.verify_files_at_each_level_callback import VerifyFilesAtEachLevelCallback
 
 
 class ProbeArgs:
@@ -23,31 +26,51 @@ class ProbeArgs:
 class Probe:
     path: str
     pattern:Pattern
+    logger: LogEmitter
 
     def __init__(self, probeArgs: ProbeArgs):
         self.probeArgs = probeArgs
         self.pattern = re.compile(probeArgs.regex_filter)
+        self.logger = LogEmitter("Probe")
 
-    def __get_all_dir(self, parent:ScanTree) -> ScanTree:
 
-        # Iterates over all items in current directory
-        for item in os.listdir(parent.full_path):
+    def __get_all_dir_parallel(self, parent: ScanTree, verify_files_at_each_level:VerifyFilesAtEachLevelCallback) -> ScanTree:
+        self.logger.emit(f"Scanning {parent.full_path}")
 
-            # Checks if the item is a file and NOT a dir
-            if not os.path.isdir(os.path.join(parent.full_path, item)):
+        # Create thread pool
+        with ThreadPoolExecutor(max_workers=16) as executor:
+            futures = []
 
-                # Checks if the file matches the regex provided
-                if self.pattern.match(item):
-                    # append to parent node
-                    parent.files.append(Image(id=None, dir=parent.full_path, filename=item))
+            # Iterate over items in path
+            for item in os.listdir(parent.full_path):
 
-            # When item is a directory
-            else:
-                # recursively call this method
-                parent.child_trees.append(self.__get_all_dir(ScanTree(full_path=os.path.join(parent.full_path, item))))
+                # Get absolute path
+                item_path = os.path.join(parent.full_path, item)
+
+                # If item is not a directory
+                if not os.path.isdir(item_path):
+                    # and matches regex
+                    if self.pattern.match(item):
+                        # Add file to ScanTree.files
+                        parent.files.append(Image(id=None, dir=parent.full_path + '/', filename=item))
+                else:
+                    # Submit directory scanning tasks to the thread pool
+                    future = executor.submit(self.__get_all_dir_parallel, ScanTree(full_path=item_path), verify_files_at_each_level)
+                    futures.append(future)
+
+            if len(parent.files) > 0:
+                verify_files_at_each_level(dir=parent.full_path + '/', images=parent.files)
+
+
+
+            # Wait for all submitted tasks to complete
+            for future in as_completed(futures):
+                child_tree = future.result()
+                parent.child_trees.append(child_tree)
 
         return parent
 
 
-    def get_all_dir(self) -> ScanTree:
-        return self.__get_all_dir(parent=ScanTree(full_path=os.path.abspath(self.probeArgs.path)))
+    def create_scan_tree(self, verify_files_at_each_level:VerifyFilesAtEachLevelCallback) -> ScanTree:
+        self.logger.emit(f"Creating scan tree for {os.path.abspath(self.probeArgs.path)}")
+        return self.__get_all_dir_parallel(parent=ScanTree(full_path=os.path.abspath(self.probeArgs.path)), verify_files_at_each_level=verify_files_at_each_level)
