@@ -56,3 +56,52 @@ class ImageDriver(DbDriver):
 
         self.connection.commit()
         self.close()
+
+    def delete_image_list(self, img_list:List[Image]):
+        self.connect()
+        cursor = self.connection.cursor()
+
+        for img in img_list:
+            cursor.execute("""
+                delete from images where dir = (?) and filename = (?)
+            """, (img.dir, img.filename,))
+
+        self.connection.commit()
+        self.close()
+
+    def delete_image_from_master_path(self, master_path:str) -> None:
+        self.connect()
+        cursor = self.connection.cursor()
+
+        cursor.execute("""
+            delete from images where dir like (?)
+        """, (f"{master_path}%",))
+
+        self.connection.commit()
+        self.close()
+
+    def count_from_master_path(self, master_path:str) -> int:
+        self.connect()
+        cursor = self.connection.cursor()
+
+        res = cursor.execute("""
+            select count(*) from images where dir like (?)
+        """, (f"{master_path}%",))
+
+        count = res.fetchone()[0]
+
+        self.close()
+
+        return count
+
+    def get_image_names_in_path(self, path:str) -> List[str]:
+        self.connect()
+        cursor = self.connection.cursor()
+        res = cursor.execute("""
+            select filename from images where dir = (?)
+        """, (path,))
+
+        filenames = [file[0] for file in res.fetchall()]
+        self.close()
+        return filenames
+
