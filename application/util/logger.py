@@ -19,7 +19,7 @@ class Logger:
     def emit(self, message:str="", fallback_source:str=""):
         print(f"[LOGGER{f': {fallback_source}' if fallback_source else ''}] {message}")
         for subscriber in self.subscribers:
-            subscriber.log_callback(f"[{subscriber.source if subscriber.source != 'UNDEFINED SOURCE' else fallback_source}] {message}")
+            subscriber.log_callback(f"[{fallback_source}] {message}")
 
 
 class LogEmitter:
@@ -33,8 +33,6 @@ class LogEmitter:
 
 
 class LogSubscriber:
-
-    source:str = "UNDEFINED SOURCE"
 
     def log_callback(self, message):
         raise NotImplementedError
