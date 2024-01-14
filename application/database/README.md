@@ -35,8 +35,8 @@ erDiagram
     
     
     Image ||--o{ FaceInImage : "Contains"
-    FaceInImage ||--o{ Face : "Belongs to"
+    FaceInImage }|--o{ Face : "Belongs to"
     Person ||--o{ Face : "Has encodings"
 ```
 
-The SQLite3 implementation implements an additional adapter to handle arrays to simplify the storage of vectors (embeddings) of faces.
+The SQLite3 implementation implements an additional adapter to handle Numpy arrays to simplify the storage of vectors (embeddings) of faces.
