@@ -17,7 +17,7 @@ class ProbeArgs:
     regex_filter: Pattern[str]
 
     def __init__(self, path:str, regex_filter:Pattern[str]):
-        assert path[-1] == "/" or path[-1] == "//", "Path must terminate with `/` or `//` to be considered a directory!"
+        assert path[-1] == "/", "Path must terminate with `/` to be considered a directory!"
 
         self.path = path
         self.regex_filter = regex_filter
