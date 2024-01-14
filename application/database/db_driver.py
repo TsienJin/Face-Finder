@@ -9,6 +9,9 @@ class DbDriver:
     def __init__(self):
         self.name="Driver"
 
+    def __init_table(self):
+        raise NotImplementedError
+
     def connect(self):
         self.connection = sqlite3.connect(os.environ.get("DB_PATH"))
 
