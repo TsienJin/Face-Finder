@@ -12,7 +12,7 @@ from application.util.image_dumper import ImageDumper
 from application.util.logger import LogSubscriber, Logger
 
 
-class ConfigTab(QWidget):
+class ConfigPanel(QWidget):
 
     def __init__(self):
         super().__init__()
@@ -101,6 +101,4 @@ class Config_Paths(QGroupBox):
         bizSources.remove_sources(paths_to_remove)
         bizImages.remove_images_from_master_paths(paths_to_remove)
         self.update_list()
-
-
 
