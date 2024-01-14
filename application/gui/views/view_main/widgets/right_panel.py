@@ -9,26 +9,31 @@ from application.business_logic.biz_sources import BizSources
 from application.database.image_driver import ImageDriver
 from application.scan.probe import ProbeArgs, Probe
 from application.util.image_dumper import ImageDumper
-from application.util.logger import LogSubscriber, Logger
+from application.util.logger import LogSubscriber, Logger, LogEmitter
 
 
-class ConfigPanel(QWidget):
+class RightPanel(QWidget):
 
     def __init__(self):
         super().__init__()
 
         layout = QVBoxLayout()
 
-        self.paths = Config_Paths()
+        self.paths = Source_Path_Group()
+        self.ai_control = Face_Ai_Control_Group()
+        self.filter = Filter_Face_Group()
         layout.addWidget(self.paths)
+        layout.addWidget(self.ai_control)
+        layout.addWidget(self.filter)
 
         self.setLayout(layout)
 
 
-class Config_Paths(QGroupBox):
+class Source_Path_Group(QGroupBox):
 
     def __init__(self):
         super().__init__("Paths")
+        self.logger = LogEmitter("Source Path Group")
 
         layout = QVBoxLayout()
 
@@ -59,6 +64,7 @@ class Config_Paths(QGroupBox):
     def update_list(self):
         bizSources = BizSources()
         summary = bizSources.get_sources_summary()
+        self.logger.emit("Updating source list")
         self.treeWidget.clear()
 
         for source, count in summary.items():
@@ -74,6 +80,7 @@ class Config_Paths(QGroupBox):
         summary = bizSources.get_sources_summary()
 
         for source, _ in summary.items():
+            self.logger.emit(f"Initializing scan on {source}")
             probeArgs = ProbeArgs(
                 path=source,
                 regex_filter=re.compile(r'.*.(jpg|jpeg|png|cr2|tif|dng)', re.IGNORECASE)
@@ -101,4 +108,25 @@ class Config_Paths(QGroupBox):
         bizSources.remove_sources(paths_to_remove)
         bizImages.remove_images_from_master_paths(paths_to_remove)
         self.update_list()
+
+
+class Face_Ai_Control_Group(QGroupBox):
+    def __init__(self):
+        super().__init__("AI Control")
+
+        layout = QVBoxLayout()
+        layout.addWidget(QLabel("AI Control"))
+        self.setLayout(layout)
+
+
+class Filter_Face_Group(QGroupBox):
+
+    def __init__(self):
+        super().__init__("Filter by Face")
+
+        layout = QVBoxLayout()
+        layout.addWidget(QLabel("Filter by faces"))
+        self.setLayout(layout)
+
+
 
