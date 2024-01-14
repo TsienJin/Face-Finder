@@ -10,33 +10,21 @@ from application.objects.image import Image
 from application.scan.probe import Probe, ProbeArgs
 from application.util.image_dumper import ImageDumper
 from application.gui.controller import GuiController
-from application.util.logger import Logger
+from application.util.logger import Logger, LogEmitter
 
 load_dotenv(".env")
 
 
 def main():
 
-    # imageDriver = ImageDriver()
-    #
-    # probeArgs = ProbeArgs(
-    #     path=os.environ.get("IMG_PARENT_FOLDER"),
-    #     regex_filter=re.compile(r'.*.(jpg|jpeg|png|cr2)', re.IGNORECASE)
-    # )
-    # probe = Probe(probeArgs)
-    # image_tree = probe.get_all_dir()
-    #
-    # ImageDumper.dump_from_scantree(image_tree, imageDriver)
-    #
-    # print(image_tree)
-
+    # Initialise tables
     sourceDriver = SourceDriver()
     imageDriver = ImageDriver()
 
-    logger = Logger()
-    logger.emit("Starting application", fallback_source="APP.PY")
+    logger = LogEmitter("APP.PY")
+    logger.emit("Starting application")
     gui = GuiController()
-    logger.emit("Quiting application", fallback_source="APP.PY")
+    logger.emit("Quiting application")
 
 
 if __name__ == "__main__":
