@@ -1,15 +1,16 @@
 from PyQt6.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QPlainTextEdit
 
-from application.util.logger import LogSubscriber, Logger
+from application.util.logger import LogSubscriber, Logger, LogEmitter
 
 
 class ViewLogging(QMainWindow, LogSubscriber):
     def __init__(self):
         super().__init__()
 
+        self.logEmitter = LogEmitter("Log Window")
+
         self.logger = Logger()
         self.logger.subscribe(self)
-        self.source = "LOGGING WINDOW"
 
         self.setWindowTitle("Logs")
 
@@ -26,7 +27,7 @@ class ViewLogging(QMainWindow, LogSubscriber):
         widget.setLayout(layout)
         self.setCentralWidget(widget)
 
-        self.logger.emit("Logging window initialized!")
+        self.logEmitter.emit("Logging window initialized!")
 
     def log_callback(self, message):
         self.log_element.appendPlainText(message)
