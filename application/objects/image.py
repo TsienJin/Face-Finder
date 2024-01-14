@@ -3,7 +3,7 @@ from typing import Optional
 
 
 class Image(pydantic.BaseModel):
-    id: Optional[int]
+    id: Optional[int] = None
     dir: str
     filename: str
 
@@ -12,6 +12,9 @@ class Image(pydantic.BaseModel):
 
     def __repr__(self):
         return self.__str__()
+
+    def __eq__(self, other):
+        return self.dir == other.dir and self.filename == other.filename
 
     def toTuple(self):
         return self.id, self.dir
