@@ -1,11 +1,11 @@
 from PyQt6.QtWidgets import QMainWindow, QLabel, QWidget, QHBoxLayout, QMenuBar
 
-from application.gui.views.view_main.widgets.config_tab import ConfigTab
+from application.gui.views.view_main.widgets.right_panel import RightPanel
 
 
 class ViewMain(QMainWindow):
     widget: QWidget
-    config_tab: ConfigTab
+    config_tab: RightPanel
     menubar: QMenuBar
 
 
@@ -17,9 +17,9 @@ class ViewMain(QMainWindow):
 
     def set_contents(self):
         layout = QHBoxLayout()
-        layout.addWidget(QLabel("Label"))
+        layout.setContentsMargins(0, 0, 0, 0)
 
-        self.config_tab = ConfigTab()
+        self.config_tab = RightPanel()
         layout.addWidget(self.config_tab)
 
         self.widget = QWidget()
