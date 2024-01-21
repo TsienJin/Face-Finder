@@ -105,3 +105,27 @@ class ImageDriver(DbDriver):
         self.close()
         return filenames
 
+
+    def get_images(self, limit:int, skip:int=0) -> List[Image]:
+        self.connect()
+        cursor = self.connection.cursor()
+
+        res = cursor.execute("""
+            SELECT * FROM images ORDER BY dir limit (?) offset (?) 
+        """, (limit, skip,))
+        images = res.fetchall()
+
+        self.close()
+        return [Image(id=img[0], dir=img[1], filename=img[2]) for img in images]
+
+    def get_all_images(self) -> List[Image]:
+        self.connect()
+        cursor = self.connection.cursor()
+
+        res = cursor.execute("""
+            SELECT * FROM images ORDER BY dir
+        """)
+        images = res.fetchall()
+        self.close()
+
+        return [Image(id=img[0], dir=img[1], filename=img[2]) for img in images]
