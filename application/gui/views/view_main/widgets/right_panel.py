@@ -23,8 +23,8 @@ class RightPanel(QWidget):
         self.ai_control = Face_Ai_Control_Group()
         self.filter = Filter_Face_Group()
         layout.addWidget(self.paths)
-        layout.addWidget(self.ai_control)
         layout.addWidget(self.filter)
+        layout.addWidget(self.ai_control)
 
         self.setLayout(layout)
 
@@ -39,7 +39,7 @@ class Source_Path_Group(QGroupBox):
 
         self.treeWidget = QTreeWidget()
         self.treeWidget.setColumnCount(2)
-        self.treeWidget.setHeaderLabels(['Indexed Images', 'Path'])
+        self.treeWidget.setHeaderLabels(['Source Directory', 'Indexed Images'])
         self.treeWidget.resizeColumnToContents(0)
 
         layout.addWidget(self.treeWidget)
@@ -63,8 +63,8 @@ class Source_Path_Group(QGroupBox):
 
     def update_list(self):
         bizSources = BizSources()
-        summary = bizSources.get_sources_summary()
         self.logger.emit("Updating source list")
+        summary = bizSources.get_sources_summary()
         self.treeWidget.clear()
 
         for source, count in summary.items():
@@ -89,6 +89,7 @@ class Source_Path_Group(QGroupBox):
             probe = Probe(probeArgs)
             probe.create_scan_tree(bizImages.verifyFilesAtEachLevelCallback)
 
+        self.logger.emit("Scan complete!")
         self.update_list()
 
     def addSourceCallback(self):
@@ -110,15 +111,6 @@ class Source_Path_Group(QGroupBox):
         self.update_list()
 
 
-class Face_Ai_Control_Group(QGroupBox):
-    def __init__(self):
-        super().__init__("AI Control")
-
-        layout = QVBoxLayout()
-        layout.addWidget(QLabel("AI Control"))
-        self.setLayout(layout)
-
-
 class Filter_Face_Group(QGroupBox):
 
     def __init__(self):
@@ -128,5 +120,16 @@ class Filter_Face_Group(QGroupBox):
         layout.addWidget(QLabel("Filter by faces"))
         self.setLayout(layout)
 
+
+class Face_Ai_Control_Group(QGroupBox):
+    def __init__(self):
+        super().__init__("AI Control")
+
+        layout = QVBoxLayout()
+        # layout.addWidget(QLabel("AI Control"))
+        self.analyse_button = QPushButton("Analyse Images")
+
+        layout.addWidget(self.analyse_button)
+        self.setLayout(layout)
 
 
