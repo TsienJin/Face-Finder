@@ -16,16 +16,20 @@ erDiagram
         string name
     }
     
-    Face {
+    PersonWithFaceInImage {
         int id pk
         int person_id
-        array encoding
+        int face_in_image_id
     }  
     
     FaceInImage {
         int id pk
         int image_id
-        int face_id
+        int img_x_pos
+        int img_y_pos
+        int img_width
+        int img_height
+        array encoding
     }
     
     Source { 
@@ -35,8 +39,8 @@ erDiagram
     
     
     Image ||--o{ FaceInImage : "Contains"
-    FaceInImage }|--o{ Face : "Belongs to"
-    Person ||--o{ Face : "Has encodings"
+    FaceInImage }|--o{ PersonWithFaceInImage : "Recorded by"
+    PersonWithFaceInImage }o--|| Person : ""
 ```
 
 The SQLite3 implementation implements an additional adapter to handle Numpy arrays to simplify the storage of vectors (embeddings) of faces.
