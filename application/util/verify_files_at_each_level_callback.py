@@ -1,6 +1,6 @@
 from typing import Protocol, List
 
-from application.objects.image import Image
+from application.models.image import Image
 
 
 class VerifyFilesAtEachLevelCallback(Protocol):

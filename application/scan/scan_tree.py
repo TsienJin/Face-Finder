@@ -1,6 +1,6 @@
 from typing import List
 
-from application.objects.image import Image
+from application.models.image import Image
 
 
 class ScanTree:

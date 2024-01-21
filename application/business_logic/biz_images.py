@@ -2,7 +2,7 @@ from typing import List
 
 from application.business_logic.biz_logic_parent import BizLogic
 from application.database.image_driver import ImageDriver
-from application.objects.image import Image
+from application.models.image import Image
 from application.util.logger import LogEmitter
 
 

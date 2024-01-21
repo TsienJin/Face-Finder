@@ -1,7 +1,7 @@
 from typing import List
 
 from application.database.db_driver import DbDriver
-from application.objects.image import Image
+from application.models.image import Image
 
 
 

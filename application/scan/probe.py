@@ -6,7 +6,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from typing import Pattern, Dict
 
-from application.objects.image import Image
+from application.models.image import Image
 from application.scan.scan_tree import ScanTree
 from application.util.logger import LogEmitter
 from application.util.verify_files_at_each_level_callback import VerifyFilesAtEachLevelCallback
